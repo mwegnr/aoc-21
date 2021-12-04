@@ -1,4 +1,4 @@
-test_input = [int(x) for x in open("testinput", 'r').readlines()]
+test_input = [int(x) for x in open("test_input", 'r').readlines()]
 input = [int(x) for x in open("input", 'r').readlines()]
 
 
