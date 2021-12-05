@@ -2,7 +2,7 @@ from statistics import mode
 import numpy as np
 
 test_input = [[int(y) for y in x.removesuffix('\n')] for x in open("test_input", 'r').readlines()]
-input = [x.removesuffix('\n') for x in open("input", 'r').readlines()]
+input = [[int(y) for y in x.removesuffix('\n')] for x in open("input", 'r').readlines()]
 
 
 # part one
