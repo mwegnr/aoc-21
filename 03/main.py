@@ -1,16 +1,24 @@
-from statistics import mode
+from collections import Counter
+
 import numpy as np
 
-test_input = [[int(y) for y in x.removesuffix('\n')] for x in open("test_input", 'r').readlines()]
-input = [[int(y) for y in x.removesuffix('\n')] for x in open("input", 'r').readlines()]
+test_input = np.array([[int(y) for y in x.removesuffix('\n')] for x in open("test_input", 'r').readlines()])
+input = np.array([[int(y) for y in x.removesuffix('\n')] for x in open("input", 'r').readlines()])
 
 
 # part one
 
-def calculate_gamma(data: list[str]) -> str:
-    array = np.array(data)
-    gamma = ''.join([str(mode(i)) for i in array.T])
-    return gamma
+def mode(data: iter, default: object = 1, least_common=False) -> object:
+    cnt = Counter(data).most_common()
+    if cnt[0][1] == cnt[1][1]:
+        return default
+    if least_common:
+        return cnt[1][0]
+    return cnt[0][0]
+
+
+def calculate_gamma(data: np.array) -> str:
+    return ''.join([str(mode(i)) for i in data.T])
 
 
 def calculate_epsilon(gamma: str) -> str:
@@ -18,16 +26,35 @@ def calculate_epsilon(gamma: str) -> str:
 
 
 def calculate_power_consumption(gamma: str, epsilon: str) -> int:
-    gamma_int = int(gamma, 2)
-    epsilon_int = int(epsilon, 2)
-    return gamma_int * epsilon_int
+    return int(gamma, 2) * int(epsilon, 2)
 
 
+#
 # print(test_input)
-gamma = calculate_gamma(test_input)
-epsilon = calculate_epsilon(gamma)
-print(calculate_power_consumption(gamma, epsilon))
+# gamma = calculate_gamma(test_input)
+# epsilon = calculate_epsilon(gamma)
+# print(calculate_power_consumption(gamma, epsilon))
+#
 
+#
 # part two
 
-# def calculate_oxygen_gen_rating(data: list[str], gamma: str):
+def calculate_oxygen_gen_rating(data: np.array) -> int:
+    for i in range(data.shape[1]):
+        current_mode = mode(data.T[i])
+        data = data[np.where(data.T[i] == current_mode)]
+        if data.shape[0] == 1:
+            break
+    return int(''.join(map(str, data[0])), 2)
+
+
+def calculate_co2_scrubber_rating(data: np.array) -> int:
+    for i in range(data.shape[1]):
+        current_mode = mode(data.T[i], default=0, least_common=True)
+        data = data[np.where(data.T[i] == current_mode)]
+        if data.shape[0] == 1:
+            break
+    return int(''.join(map(str, data[0])), 2)
+
+
+print(calculate_oxygen_gen_rating(input) * calculate_co2_scrubber_rating(input))
