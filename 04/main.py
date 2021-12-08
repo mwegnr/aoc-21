@@ -3,6 +3,7 @@ import numpy as np
 test_input = [x.removesuffix('\n') for x in open("test_input", "r").readlines() if x.removesuffix('\n') != '']
 input = [x.removesuffix('\n') for x in open("input", "r").readlines() if x.removesuffix('\n') != '']
 
+
 class Board:
     def __init__(self, values: np.array):
         self.won = False
@@ -42,9 +43,8 @@ def parse_drawings(drawing_input: str) -> list[int]:
 def parse_boards(board_input: list[str]) -> list[Board]:
     np_boards = np.array([[int(x) for x in y.split(' ') if x != ""] for y in board_input])
     boards_cnt = int(len(np_boards) / 5)
-    boards = []
-    for board in np.split(np_boards, boards_cnt):
-        boards.append(Board(board))
+
+    boards = [Board(x) for x in np.split(np_boards, boards_cnt)]
     return boards
 
 
