@@ -52,14 +52,24 @@ def draw_lines(lines: list[Line], diagonals: bool = False) -> np.array:
         if line.is_vertical():
             field[line.x1:line.x2 + 1, line.y1] += 1
         if line.is_diagonal() and diagonals:
-            # TODO: consider direction
-            for i in range(line.x2 - line.x1):
-                field[line.x1 + i][line.y1 + i] += 1
+            if line.x1 < line.x2 and line.y1 < line.y2:
+                for i in range(line.x2 - line.x1 + 1):
+                    field[line.x1 + i][line.y1 + i] += 1
+            elif line.x1 < line.x2 and line.y1 > line.y2:
+                for i in range(line.x2 - line.x1 + 1):
+                    field[line.x1 + i][line.y1 - i] += 1
+            elif line.x1 > line.x2 and line.y1 < line.y2:
+                for i in range(line.x1 - line.x2 + 1):
+                    field[line.x1 - i][line.y1 + i] += 1
+            elif line.x1 > line.x2 and line.y1 > line.y2:
+                for i in range(line.x1 - line.x2 + 1):
+                    field[line.x1 - i][line.y1 - i] += 1
     print(field.T)
     return field.T
 
 
-parsed_lines = parse_lines(test_input)
+parsed_lines = parse_lines(input)
+print([line for line in parsed_lines if line.is_diagonal()])
 drawn_field = draw_lines(parsed_lines)
 print(np.count_nonzero(drawn_field > 1))
 
